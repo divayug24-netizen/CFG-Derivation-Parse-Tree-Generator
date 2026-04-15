@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CFG Derivation &amp; Parse Tree Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+</head>
+<body>
+    <div class="wrapper">
+
+        <aside class="sidebar">
+            <header class="header">
+                <h1>CFG Generator</h1>
+            </header>
+
+            <section class="input-card">
+                <div class="input-group">
+                    <label for="grammar">Grammar Rules</label>
+                    <div class="symbol-buttons">
+                        <button type="button" class="btn-sym" data-symbol="->" title="Production arrow">&rarr;</button>
+                        <button type="button" class="btn-sym" data-symbol="|" title="Alternation">|</button>
+                        <button type="button" class="btn-sym" data-symbol="ε" title="Epsilon">&epsilon;</button>
+                    </div>
+                    <textarea id="grammar" rows="8" spellcheck="false" placeholder="S -> aSb | ab">S -> aSb | ab</textarea>
+                    <small>Non-terminals: A–Z &middot; One rule per line</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="target">Input String</label>
+                    <input type="text" id="target" value="aabb" spellcheck="false" placeholder="e.g. aabb">
+                </div>
+
+                <div class="input-group">
+                    <span class="label-mt">Quick Examples</span>
+                    <div class="example-grid">
+                        <button class="btn-ex" data-example="1">a<sup>n</sup>b<sup>n</sup></button>
+                        <button class="btn-ex" data-example="2">Multi-rule</button>
+                        <button class="btn-ex" data-example="3">Palindrome</button>
+                        <button class="btn-ex" data-example="4">Arithmetic</button>
+                    </div>
+                </div>
+
+                <button id="generate" class="btn-generate">Generate</button>
+                <div id="error" class="error hidden"></div>
+            </section>
+        </aside>
+
+        <main class="content-area">
+            <div id="placeholder" class="placeholder">
+                <div class="placeholder-icon">{ }</div>
+                <p>Enter a grammar and string, then click <strong>Generate</strong></p>
+            </div>
+
+            <div id="output" class="output hidden">
+                
+                <div class="result-section">
+                    <h2>Parsed Grammar</h2>
+                    <table id="grammar-table" class="grammar-table">
+                        <thead><tr><th>Non-Terminal</th><th>Productions</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div class="result-section">
+                    <h2>Step-by-Step Derivation</h2>
+                    <div class="derivation-pair">
+                        <div class="deriv-col">
+                            <h3>Leftmost</h3>
+                            <div id="left-stepper" class="stepper-display"></div>
+                        </div>
+                        <div class="deriv-col">
+                            <h3>Rightmost</h3>
+                            <div id="right-stepper" class="stepper-display"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h2>Parse Tree</h2>
+                    <div class="tree-wrapper graph-paper" id="tree-wrapper">
+                        <button class="tree-fullscreen-btn" id="tree-fullscreen" title="Toggle fullscreen">⛶</button>
+                        <canvas id="parse-tree"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="grammar.js"></script>
+    <script src="derivation.js"></script>
+    <script src="tree.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+    (function () {
+        // Fullscreen toggle logic only
+        const fsBtn = document.getElementById('tree-fullscreen');
+        const wrapper = document.getElementById('tree-wrapper');
+        if (fsBtn && wrapper) {
+            fsBtn.addEventListener('click', function () {
+                wrapper.classList.toggle('is-fullscreen');
+                fsBtn.textContent = wrapper.classList.contains('is-fullscreen') ? '✕' : '⛶';
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    wrapper.classList.remove('is-fullscreen');
+                    fsBtn.textContent = '⛶';
+                }
+            });
+        }
+    })();
+    </script>
+</body>
+</html>
